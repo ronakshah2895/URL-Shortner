@@ -16,6 +16,22 @@ function createUrl(req, res) {
   else res.status(400).send('Invalid Redirect URL');
 }
 
+function editUrl(req, res) {
+  if (isUrl(req.body.redirectUrl)) {
+    urlModel.findOneAndUpdate({ identifier: req.body.identifier }, {
+      redirectUrl: req.body.redirectUrl,
+    }).then(() => {
+      res.send('URL updated successfully.');
+    });
+  } else res.status(400).send('Invalid Redirect URL');
+}
+
+function deleteUrl(req, res) {
+  urlModel.deleteOne({ identifier: req.body.identifier }).then(() => {
+    res.send('Url deleted successfully.');
+  });
+}
+
 function redirectReq(req, res) {
   urlModel.findOne({ identifier: req.params.identifier }).then((url) => {
     if (url) res.redirect(url.redirectUrl);
@@ -23,4 +39,6 @@ function redirectReq(req, res) {
   });
 }
 
-module.exports = { createUrl, redirectReq };
+module.exports = {
+  createUrl, editUrl, deleteUrl, redirectReq
+};
